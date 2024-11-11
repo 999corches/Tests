@@ -46,27 +46,6 @@
     <script>
         document.getElementById('webhookButton').addEventListener('click', function() {
             const webhookUrl = 'https://hook.eu2.make.com/9ll6dj3qqscb1f9i8nbhpnylmm9cam76'; // Ersetze dies mit deiner Webhook-URL
-
-            fetch(webhookUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    message: 'Webhook wurde ausgelöst'
-                })
-            })
-            .then(response => {
-                if (response.ok) {
-                    document.getElementById('message').innerText = 'Webhook erfolgreich gesendet!';
-                } else {
-                    document.getElementById('message').innerText = 'Fehler beim Senden des Webhooks.';
-                }
-            })
-            .catch(error => {
-                document.getElementById('message').innerText = 'Netzwerkfehler. Bitte versuche es später erneut.';
-            });
-        });
     </script>
 </body>
 </html>
