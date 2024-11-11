@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Webhook Button</title>
+    <title>Webhook Formular</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -16,6 +16,10 @@
         }
         .container {
             text-align: center;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         button {
             padding: 15px 30px;
@@ -30,22 +34,16 @@
         button:hover {
             background-color: #0056b3;
         }
-        .message {
-            margin-top: 20px;
-            font-size: 18px;
-        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Webhook Button</h1>
-        <button id="webhookButton">Webhook auslösen</button>
-        <div class="message" id="message"></div>
+        <h1>Webhook Formular</h1>
+        <form action="https://dein-webhook-url-hier.com" method="POST">
+            <input type="hidden" name="message" value="Webhook ausgelöst">
+            <button type="submit">Webhook senden</button>
+        </form>
     </div>
-
-    <script>
-        document.getElementById('webhookButton').addEventListener('click', function() {
-            const webhookUrl = 'https://hook.eu2.make.com/9ll6dj3qqscb1f9i8nbhpnylmm9cam76'; // Ersetze dies mit deiner Webhook-URL
-    </script>
 </body>
 </html>
+
