@@ -3,47 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Webhook Formular</title>
+    <title>BarcodeScanner</title>
+    <script src="https://unpkg.com/html5-qrcode"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        body, html {
+            height: 100%;
+            margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            background-color: #f0f0f0;
-            margin: 0;
+            font-family: Arial, sans-serif;
         }
+
         .container {
             text-align: center;
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
-        button {
-            padding: 15px 30px;
-            font-size: 16px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
+
+        #reader {
+            width: 600px;
+            max-width: 90vw;
+            margin-bottom: 20px;
         }
-        button:hover {
-            background-color: #0056b3;
+
+        #result {
+            font-size: 1.2rem;
+            margin-top: 20px;
+        }
+
+        #result h3 {
+            color: #28a745;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Webhook Formular</h1>
-        <form action="https://hook.eu2.make.com/9ll6dj3qqscb1f9i8nbhpnylmm9cam76" method="POST">
-            <input type="hidden" name="message" value="Webhook ausgelöst">
-            <button type="submit">Webhook senden</button>
-        </form>
-    </div>
+<div class="container">
+    <div id="reader"></div>
+    <div id="result"></div>
+</div>
+
+<script>
+    // Ersetze dies durch die URL deines Webhooks von Make.com
+    const webhookUrl = 'https://hook.eu2.make.com/9ll6dj3qqscb1f9i8nbhpnylmm9cam76';
+
+    const scanner = new Html5QrcodeScanner('reader', {
+        qrbox: {
+            width: 200,
+            height: 250
+        },
+        fps: 20,
+    });
+
+    function success(decodedText, decodedResult) {
+        // Zeige das Ergebnis im Browser an (QR-Code-Wert)
+        document.getElementById('result').innerHTML = `
+            <h3>Erfolgreich gescannt</h3>
+            <p>QR-Code-Wert: ${decodedText}</p>
+            <br /> <br />
+            <a href="index.html">nochmal scannen</a>`;
+
+        // Sende den QR-Code-Wert an den Webhook von Make.com
+        fetch(webhookUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ qrValue: decodedText })  // Sende den QR-Wert
+        })
+        .then(response => response.json())  // Wenn der Webhook erfolgreich ist, antworte mit JSON
+        .then(data => {
+            // Verarbeite die Antwort von Make.com
+            console.log('Erfolgreich an Make.com gesendet:', data);
+
+            // Setze den Wert, der von Make.com zurückgegeben wird, in das Ergebnisfeld
+            document.getElementById('result').innerHTML += `
+                <h3>Daten aus dem Google Sheet:</h3>
+                <p>${data.returnedValue}</p>
+            `;
+        })
+        .catch(error => {
+            console.error('Fehler beim Senden an Make.com:', error);
+        });
+
+        // Stoppe den Scanner und entferne den Reader
+        scanner.clear();
+        document.getElementById('reader').remove();
+    }
+
+    function error(errorMessage) {
+        console.error(errorMessage);
+    }
+
+    // Starte den QR-Code-Scanner
+    scanner.render(success, error);
+</script>
 </body>
 </html>
 
